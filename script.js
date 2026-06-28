@@ -1,6 +1,6 @@
 const page = document.getElementById("page")
 const imageUpload = document.getElementById("imageUpload")
-const backgroundImageKey = "onetab.backgroundImage"
+const backgroundImageKey = "onepictab.backgroundImage"
 
 function applyBackground(imageDataUrl) {
   if (imageDataUrl) {
@@ -27,7 +27,17 @@ function saveImage(file) {
       return
     }
 
-    localStorage.setItem(backgroundImageKey, imageDataUrl)
+    try {
+      localStorage.setItem(backgroundImageKey, imageDataUrl)
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "QuotaExceededError") {
+        alert("The image is too large for storage.\nPlease compress or resize it and try again.")
+      } else {
+        throw error
+      }
+      return
+    }
+
     applyBackground(imageDataUrl)
   })
 
